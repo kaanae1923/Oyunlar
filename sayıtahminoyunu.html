@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+<title>Sayı Tahmin Oyunu</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:18px;
+    overflow:hidden;
+    color:white;
+    position:relative;
+
+    background:
+        radial-gradient(circle at 20% 20%,#65523a 0,transparent 30%),
+        radial-gradient(circle at 80% 75%,#4a3827 0,transparent 35%),
+        linear-gradient(135deg,#18130e,#4a3825,#17120d);
+}
+
+/* Tozlu ortam */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+
+    background-image:
+        radial-gradient(circle,rgba(230,210,175,.18) 1px,transparent 2px),
+        radial-gradient(circle,rgba(255,255,255,.08) 1px,transparent 2px);
+
+    background-size:55px 55px,90px 90px;
+    animation:dust 12s linear infinite;
+
+    opacity:.55;
+}
+
+@keyframes dust{
+    from{
+        background-position:0 0,0 0;
+    }
+    to{
+        background-position:150px -100px,-120px 100px;
+    }
+}
+
+/* Alarm */
+body.alarm{
+    animation:redFlash .5s infinite;
+}
+
+@keyframes redFlash{
+    0%,100%{
+        box-shadow:inset 0 0 0 rgba(255,0,0,0);
+    }
+    50%{
+        box-shadow:inset 0 0 130px rgba(255,0,0,.6);
+    }
+}
+
+.alarm-light{
+    position:fixed;
+    width:23px;
+    height:23px;
+    border-radius:50%;
+
+    background:#ff1c1c;
+
+    box-shadow:
+        0 0 18px #ff0000,
+        0 0 45px rgba(255,0,0,.9);
+
+    opacity:0;
+    z-index:20;
+    pointer-events:none;
+}
+
+body.alarm .alarm-light{
+    animation:blink .5s infinite;
+}
+
+.light1{top:18px;left:18px}
+.light2{top:18px;right:18px;animation-delay:.12s!important}
+.light3{bottom:18px;left:18px;animation-delay:.24s!important}
+.light4{bottom:18px;right:18px;animation-delay:.36s!important}
+
+@keyframes blink{
+    0%,100%{opacity:.1}
+    50%{opacity:1}
+}
+
+/* Ana panel */
+.game{
+    width:100%;
+    max-width:430px;
+
+    padding:25px 20px;
+
+    text-align:center;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(58,47,35,.97),
+            rgba(22,19,16,.98)
+        );
+
+    border:2px solid rgba(190,160,110,.3);
+
+    border-radius:23px;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.7),
+        inset 0 1px rgba(255,255,255,.08);
+
+    position:relative;
+    z-index:5;
+
+    animation:appear .7s ease;
+}
+
+@keyframes appear{
+    from{
+        opacity:0;
+        transform:translateY(25px) scale(.95);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+/* Kurgusal cihaz */
+.device{
+    width:260px;
+    height:145px;
+
+    margin:0 auto 20px;
+
+    position:relative;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #555,
+            #292929 45%,
+            #111
+        );
+
+    border:5px solid #111;
+
+    box-shadow:
+        inset 0 0 18px rgba(255,255,255,.08),
+        inset -12px -15px 25px rgba(0,0,0,.75),
+        0 15px 30px rgba(0,0,0,.55);
+
+    transform:rotate(-1deg);
+}
+
+/* Üst metal çizgi */
+.device::before{
+    content:"";
+
+    position:absolute;
+    left:12px;
+    right:12px;
+    top:10px;
+
+    height:5px;
+
+    border-radius:5px;
+
+    background:#111;
+
+    box-shadow:
+        0 18px 0 #111,
+        0 36px 0 #111;
+}
+
+/* Vidalar */
+.screw{
+    position:absolute;
+
+    width:10px;
+    height:10px;
+
+    border-radius:50%;
+
+    background:#777;
+
+    border:2px solid #222;
+
+    box-shadow:inset 1px 1px 2px #aaa;
+}
+
+.s1{top:9px;left:9px}
+.s2{top:9px;right:9px}
+.s3{bottom:9px;left:9px}
+.s4{bottom:9px;right:9px}
+
+/* Ekran */
+.device-screen{
+    position:absolute;
+
+    left:35px;
+    top:42px;
+
+    width:112px;
+    height:55px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border-radius:7px;
+
+    background:#0c0807;
+
+    border:4px solid #1b1714;
+
+    color:#ff3c32;
+
+    font-family:monospace;
+    font-size:32px;
+    font-weight:bold;
+
+    text-shadow:
+        0 0 7px #ff1600,
+        0 0 18px rgba(255,0,0,.7);
+
+    box-shadow:
+        inset 0 0 18px rgba(255,0,0,.18);
+}
+
+/* Alarm ışığı cihazda */
+.device-light{
+    position:absolute;
+
+    right:35px;
+    top:48px;
+
+    width:27px;
+    height:27px;
+
+    border-radius:50%;
+
+    background:#591313;
+
+    border:3px solid #111;
+}
+
+body.alarm .device-light{
+    background:#ff1515;
+
+    box-shadow:
+        0 0 12px #ff0000,
+        0 0 30px #ff0000;
+
+    animation:deviceBlink .5s infinite;
+}
+
+@keyframes deviceBlink{
+    0%,100%{opacity:.25}
+    50%{opacity:1}
+}
+
+/* Kablo görünümü */
+.wire{
+    position:absolute;
+
+    right:-30px;
+    bottom:15px;
+
+    width:50px;
+    height:15px;
+
+    border-bottom:6px solid #111;
+
+    border-radius:50%;
+}
+
+h1{
+    font-size:27px;
+    color:#e7d4b2;
+    margin-bottom:8px;
+}
+
+.description{
+    color:#b9aa95;
+    line-height:1.5;
+    margin-bottom:18px;
+}
+
+.hak{
+    display:inline-block;
+
+    padding:8px 15px;
+
+    margin-bottom:16px;
+
+    border-radius:20px;
+
+    background:rgba(0,0,0,.35);
+
+    color:#ddd;
+
+    font-size:14px;
+}
+
+.input-area{
+    display:flex;
+    gap:9px;
+
+    margin-bottom:15px;
+}
+
+input{
+    width:100%;
+    min-width:0;
+
+    padding:15px;
+
+    border:none;
+    outline:none;
+
+    border-radius:13px;
+
+    background:#17130f;
+
+    color:white;
+
+    border:1px solid #584938;
+
+    text-align:center;
+
+    font-size:20px;
+}
+
+input::placeholder{
+    color:#817565;
+}
+
+button{
+    border:none;
+    cursor:pointer;
+
+    color:white;
+    font-weight:bold;
+
+    transition:.2s;
+}
+
+.tahmin{
+    min-width:105px;
+
+    border-radius:13px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #a84b2d,
+            #d06b32
+        );
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.4);
+}
+
+button:active{
+    transform:scale(.94);
+}
+
+button:disabled{
+    opacity:.45;
+}
+
+.mesaj{
+    min-height:54px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:10px;
+
+    border-radius:13px;
+
+    background:rgba(0,0,0,.28);
+
+    color:#ddd;
+
+    font-size:15px;
+}
+
+.gecmis{
+    margin-top:15px;
+
+    color:#9f9282;
+
+    font-size:14px;
+}
+
+.yeniden{
+    display:none;
+
+    width:100%;
+
+    padding:15px;
+
+    margin-top:17px;
+
+    border-radius:13px;
+
+    font-size:17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #776044,
+            #a07c4e
+        );
+}
+
+/* Son hak */
+.last-warning{
+    animation:warningPulse .45s infinite;
+}
+
+@keyframes warningPulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.05)}
+}
+
+/* Patlama ekranı */
+.explosion{
+    display:none;
+
+    position:fixed;
+    inset:0;
+
+    z-index:100;
+
+    justify-content:center;
+    align-items:center;
+
+    background:rgba(0,0,0,.2);
+}
+
+.explosion.active{
+    display:flex;
+
+    animation:flashExplosion 1.2s ease;
+}
+
+.explosion-core{
+    width:70px;
+    height:70px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            #fff 0%,
+            #ffe95b 12%,
+            #ff9d00 32%,
+            #ef3d17 55%,
+            transparent 73%
+        );
+
+    box-shadow:
+        0 0 40px #fff,
+        0 0 90px #ff9d00,
+        0 0 180px #ff3d00;
+
+    animation:explode 1.2s ease-out forwards;
+}
+
+@keyframes explode{
+    0%{
+        transform:scale(.2);
+        opacity:1;
+    }
+
+    45%{
+        transform:scale(5);
+        opacity:1;
+    }
+
+    100%{
+        transform:scale(14);
+        opacity:0;
+    }
+}
+
+@keyframes flashExplosion{
+    0%{
+        background:rgba(255,235,160,.95);
+    }
+
+    18%{
+        background:rgba(255,80,20,.7);
+    }
+
+    45%{
+        background:rgba(30,20,12,.8);
+    }
+
+    100%{
+        background:rgba(0,0,0,.4);
+    }
+}
+
+/* Çatlamış cam efekti */
+.damage{
+    display:none;
+
+    position:fixed;
+    inset:0;
+
+    z-index:90;
+
+    pointer-events:none;
+}
+
+.damage.active{
+    display:block;
+
+    animation:damageFade 2.8s ease forwards;
+}
+
+/* Çatlak ana çizgileri */
+.crack{
+    position:absolute;
+
+    height:3px;
+
+    background:rgba(235,235,225,.82);
+
+    transform-origin:left center;
+
+    box-shadow:
+        0 0 3px rgba(255,255,255,.5),
+        0 0 8px rgba(255,255,255,.15);
+}
+
+/* Çoklu çatlaklar */
+.c1{
+    width:230px;
+    left:50%;
+    top:50%;
+    transform:rotate(12deg);
+}
+
+.c2{
+    width:170px;
+    left:50%;
+    top:50%;
+    transform:rotate(92deg);
+}
+
+.c3{
+    width:190px;
+    left:50%;
+    top:50%;
+    transform:rotate(205deg);
+}
+
+.c4{
+    width:150px;
+    left:50%;
+    top:50%;
+    transform:rotate(280deg);
+}
+
+.c5{
+    width:130px;
+    left:50%;
+    top:50%;
+    transform:rotate(42deg);
+}
+
+.c6{
+    width:120px;
+    left:50%;
+    top:50%;
+    transform:rotate(145deg);
+}
+
+.c7{
+    width:115px;
+    left:50%;
+    top:50%;
+    transform:rotate(235deg);
+}
+
+.c8{
+    width:140px;
+    left:50%;
+    top:50%;
+    transform:rotate(325deg);
+}
+
+/* Küçük dallar */
+.branch{
+    position:absolute;
+
+    width:70px;
+    height:2px;
+
+    background:rgba(235,235,225,.72);
+
+    transform-origin:left center;
+}
+
+.b1{
+    left:50%;
+    top:50%;
+    transform:rotate(35deg);
+}
+
+.b2{
+    left:50%;
+    top:50%;
+    transform:rotate(125deg);
+}
+
+.b3{
+    left:50%;
+    top:50%;
+    transform:rotate(215deg);
+}
+
+.b4{
+    left:50%;
+    top:50%;
+    transform:rotate(305deg);
+}
+
+@keyframes damageFade{
+    0%{
+        opacity:0;
+    }
+
+    20%{
+        opacity:1;
+    }
+
+    100%{
+        opacity:.9;
+    }
+}
+
+/* Toz bulutu */
+.dust-cloud{
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    width:130px;
+    height:130px;
+
+    transform:translate(-50%,-50%);
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(220,200,165,.72),
+            rgba(145,120,85,.4) 45%,
+            transparent 72%
+        );
+
+    filter:blur(5px);
+
+    animation:dustExplosion 2.7s ease-out forwards;
+}
+
+@keyframes dustExplosion{
+    0%{
+        transform:translate(-50%,-50%) scale(.2);
+        opacity:.1;
+    }
+
+    30%{
+        transform:translate(-50%,-50%) scale(3);
+        opacity:.9;
+    }
+
+    100%{
+        transform:translate(-50%,-50%) scale(8);
+        opacity:0;
+    }
+}
+
+/* Ekran sarsıntısı */
+body.shake-screen .game{
+    animation:bigShake .7s ease;
+}
+
+@keyframes bigShake{
+    0%,100%{
+        transform:translate(0,0);
+    }
+
+    15%{
+        transform:translate(-12px,8px);
+    }
+
+    30%{
+        transform:translate(12px,-8px);
+    }
+
+    45%{
+        transform:translate(-10px,-7px);
+    }
+
+    60%{
+        transform:translate(10px,8px);
+    }
+
+    75%{
+        transform:translate(-6px,-4px);
+    }
+}
+
+/* Mobil */
+@media(max-width:380px){
+
+    .game{
+        padding:20px 15px;
+    }
+
+    .device{
+        width:230px;
+        height:130px;
+    }
+
+    .device-screen{
+        left:28px;
+        top:38px;
+        width:105px;
+        height:50px;
+        font-size:28px;
+    }
+
+    h1{
+        font-size:24px;
+    }
+
+    .tahmin{
+        min-width:95px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="alarm-light light1"></div>
+<div class="alarm-light light2"></div>
+<div class="alarm-light light3"></div>
+<div class="alarm-light light4"></div>
+
+<div class="game" id="game">
+
+    <!-- Kurgusal oyun cihazı -->
+    <div class="device">
+
+        <div class="screw s1"></div>
+        <div class="screw s2"></div>
+        <div class="screw s3"></div>
+        <div class="screw s4"></div>
+
+        <div class="device-screen" id="timer">
+            40
+        </div>
+
+        <div class="device-light"></div>
+
+        <div class="wire"></div>
+
+    </div>
+
+    <h1>🎯 SAYIYI TAHMİN ET</h1>
+
+    <div class="description">
+        1 ile 10 arasında bir sayı tuttum.<br>
+        Süre bitmeden doğru tahmin et!
+    </div>
+
+    <div class="hak" id="hak">
+        ❤️ 3 Hakkın Var
+    </div>
+
+    <div class="input-area">
+
+        <input
+            type="number"
+            id="tahmin"
+            min="1"
+            max="10"
+            placeholder="1 - 10"
+        >
+
+        <button
+            class="tahmin"
+            id="tahminBtn">
+            TAHMİN
+        </button>
+
+    </div>
+
+    <div class="mesaj" id="mesaj">
+        Geri sayım başladı... 🎯
+    </div>
+
+    <div class="gecmis" id="gecmis">
+        Tahminlerin: -
+    </div>
+
+    <button
+        class="yeniden"
+        id="yenidenBtn">
+        🔄 Yeniden Başlat
+    </button>
+
+</div>
+
+<!-- Patlama -->
+<div class="explosion" id="explosion">
+    <div class="explosion-core"></div>
+</div>
+
+<!-- Patlama sonrası hasar -->
+<div class="damage" id="damage">
+
+    <div class="crack c1"></div>
+    <div class="crack c2"></div>
+    <div class="crack c3"></div>
+    <div class="crack c4"></div>
+    <div class="crack c5"></div>
+    <div class="crack c6"></div>
+    <div class="crack c7"></div>
+    <div class="crack c8"></div>
+
+    <div class="branch b1"></div>
+    <div class="branch b2"></div>
+    <div class="branch b3"></div>
+    <div class="branch b4"></div>
+
+    <div class="dust-cloud"></div>
+
+</div>
+
+<script>
+
+let tutulanSayi;
+let hak;
+let tahminler = [];
+
+let kalanSure = 40;
+let zamanlayici;
+
+const input =
+    document.getElementById("tahmin");
+
+const tahminBtn =
+    document.getElementById("tahminBtn");
+
+const yenidenBtn =
+    document.getElementById("yenidenBtn");
+
+const mesaj =
+    document.getElementById("mesaj");
+
+const hakYazi =
+    document.getElementById("hak");
+
+const gecmis =
+    document.getElementById("gecmis");
+
+const game =
+    document.getElementById("game");
+
+const timer =
+    document.getElementById("timer");
+
+const explosion =
+    document.getElementById("explosion");
+
+const damage =
+    document.getElementById("damage");
+
+
+function oyunuBaslat(){
+
+    clearInterval(zamanlayici);
+
+    tutulanSayi =
+        Math.floor(Math.random()*10)+1;
+
+    hak = 3;
+
+    tahminler = [];
+
+    kalanSure = 40;
+
+    input.value = "";
+
+    input.disabled = false;
+
+    tahminBtn.disabled = false;
+
+    hakYazi.textContent =
+        "❤️ 3 Hakkın Var";
+
+    mesaj.textContent =
+        "Geri sayım başladı... 🎯";
+
+    gecmis.textContent =
+        "Tahminlerin: -";
+
+    yenidenBtn.style.display =
+        "none";
+
+    timer.textContent =
+        "40";
+
+    document.body.classList.remove(
+        "alarm",
+        "shake-screen"
+    );
+
+    explosion.classList.remove(
+        "active"
+    );
+
+    damage.classList.remove(
+        "active"
+    );
+
+    game.classList.remove(
+        "last-warning"
+    );
+
+    input.focus();
+
+
+    zamanlayici =
+        setInterval(function(){
+
+            kalanSure--;
+
+            timer.textContent =
+                kalanSure;
+
+
+            /* Son 10 saniye */
+
+            if(kalanSure <= 10){
+
+                document.body.classList.add(
+                    "alarm"
+                );
+
+            }
+
+
+            /* Süre bitti */
+
+            if(kalanSure <= 0){
+
+                clearInterval(
+                    zamanlayici
+                );
+
+                bombayiPatlat(
+                    "💥 SÜRE BİTTİ!"
+                );
+            }
+
+        },1000);
+}
+
+
+/* Patlama */
+
+function bombayiPatlat(yazi){
+
+    clearInterval(
+        zamanlayici
+    );
+
+    input.disabled = true;
+
+    tahminBtn.disabled = true;
+
+    document.body.classList.remove(
+        "alarm"
+    );
+
+    mesaj.textContent =
+        yazi +
+        " Sayı " +
+        tutulanSayi +
+        " idi.";
+
+    hakYazi.textContent =
+        "💥 CİHAZ PATLADI";
+
+    yenidenBtn.style.display =
+        "block";
+
+
+    /* Büyük patlama */
+
+    explosion.classList.remove(
+        "active"
+    );
+
+    void explosion.offsetWidth;
+
+    explosion.classList.add(
+        "active"
+    );
+
+
+    /* Hasar ve çatlaklar */
+
+    setTimeout(function(){
+
+        damage.classList.remove(
+            "active"
+        );
+
+        void damage.offsetWidth;
+
+        damage.classList.add(
+            "active"
+        );
+
+        document.body.classList.add(
+            "shake-screen"
+        );
+
+    },400);
+
+
+    /* Sarsıntıyı bitir */
+
+    setTimeout(function(){
+
+        document.body.classList.remove(
+            "shake-screen"
+        );
+
+    },1200);
+
+
+    /* Patlama ışığını kaldır */
+
+    setTimeout(function(){
+
+        explosion.classList.remove(
+            "active"
+        );
+
+    },1500);
+}
+
+
+/* Tahmin */
+
+function tahminYap(){
+
+    let tahmin =
+        Number(input.value);
+
+
+    if(
+        tahmin < 1 ||
+        tahmin > 10 ||
+        !Number.isInteger(tahmin)
+    ){
+
+        mesaj.textContent =
+            "⚠️ 1 ile 10 arasında bir sayı gir!";
+
+        return;
+    }
+
+
+    tahminler.push(
+        tahmin
+    );
+
+    gecmis.textContent =
+        "Tahminlerin: " +
+        tahminler.join(" • ");
+
+
+    hak--;
+
+
+    /* DOĞRU */
+
+    if(
+        tahmin ===
+        tutulanSayi
+    ){
+
+        clearInterval(
+            zamanlayici
+        );
+
+        document.body.classList.remove(
+            "alarm"
+        );
+
+        mesaj.textContent =
+            "🎉 Tebrikler! Doğru bildin! Sayı " +
+            tutulanSayi +
+            " idi.";
+
+        hakYazi.textContent =
+            "🏆 KAZANDIN!" ;
+            
+        input.disabled = true;
+
+        tahminBtn.disabled = true;
+
+        yenidenBtn.style.display =
+            "block";
+
+        return;
+    }
+
+
+    /* HAK KALDIYSA */
+
+    if(hak > 0){
+
+        let yon;
+
+        if(
+            tahmin <
+            tutulanSayi
+        ){
+
+            yon =
+                "⬆️ Daha büyük bir sayı dene!";
+
+        }else{
+
+            yon =
+                "⬇️ Daha küçük bir sayı dene!";
+
+        }
+
+
+        if(hak === 1){
+
+            document.body.classList.add(
+                "alarm"
+            );
+
+            hakYazi.textContent =
+                "🚨 SON HAK!" ;
+
+            mesaj.textContent =
+                "🚨 SON HAK! DİKKAT! 🚨";
+                
+                mesaj.style.com
+
+        }else{
+
+            hakYazi.textContent =
+                "❤️ " +
+                hak +
+                " Hakkın Kaldı";
+
+            mesaj.textContent =
+                "❌ Yanlış! " +
+                yon;
+        }
+
+
+        input.value = "";
+
+        input.focus();
+
+    }
+
+
+    /* HAKLAR TAMAMEN BİTTİ */
+
+    else{
+
+        bombayiPatlat(
+            "💥 TÜM HAKLAR BİTTİ!"
+        );
+
+    }
+}
+
+
+tahminBtn.addEventListener(
+    "click",
+    tahminYap
+);
+
+
+input.addEventListener(
+    "keydown",
+    function(e){
+
+        if(
+            e.key === "Enter"
+        ){
+
+            tahminYap();
+
+        }
+
+    }
+);
+
+
+yenidenBtn.addEventListener(
+    "click",
+    oyunuBaslat
+);
+
+
+oyunuBaslat();
+
+</script>
+
+</body>
+</html>
