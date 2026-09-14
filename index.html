@@ -1,86 +1,63 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bizim Oyun Portalı</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: sans-serif;
-            background: #1a1b26;
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 30px 15px;
-        }
-        h1 {
-            color: #6c5ce7;
-            margin-bottom: 25px;
-            font-size: 1.8rem;
-            text-align: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 400px;
-        }
-        .oyun-kutusu {
-            background: #2d2d44;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            text-align: center;
-            border: 1px solid #444466;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .oyun-kutusu h3 {
-            margin-bottom: 10px;
-        }
-        .oyun-kutusu p {
-            color: #a9b1d6;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-        }
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background: #6c5ce7;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Bizim Oyun Portalı</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1e1e2f, #2a2a40);
+      color: #ffffff;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 { color: #6c5ce7; }
+
+    .oyun-kutusu {
+      background: #2d2d44;
+      border-radius: 12px;
+      padding: 15px;
+      margin: 15px auto;
+      max-width: 300px;
+      border: 1px solid #444466;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #00b894;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
 
-    <h1>🎮 Bizim Oyunlar</h1>
+  <h1>🎮 Oyun Platformumuz</h1>
+  <p>Tamamen kendi ellerimizle yaptığımız eğlenceli ve reklamsız ücretsiz web oyunları!</p>
 
-    <div class="container">
-        <div class="oyun-kutusu">
-            <h3>🎯 Sayı Tahmin Oyunu</h3>
-            <p>Bilgisayar bir sayı tutar ve onu bilmeye çalışırsın.</p>
-            <a href="sayıtahminoyunu.html" class="btn">Oyna</a>
-        </div>
+ 
+  <!-- Sayı Tahmin Oyunu (ı yerine i olmalı) -->
+<div class="oyun-kutusu">
+  <h3>🎯 Sayı Tahmin Oyunu</h3>
+  <p>Bilgisayar bir sayı tutar ve onu bilmeye çalışırsın</p>
+  <a href="sayitahminoyunu.html" class="btn">Oyna</a>
+</div>
 
-        <div class="oyun-kutusu">
-            <h3>🐍 Yılan Oyunu</h3>
-            <p>Klasik yılan oyunu.</p>
-            <a href="yilan.html" class="btn">Oyna</a>
-        </div>
+<!-- Yılan Oyunu -->
+<div class="oyun-kutusu">
+  <h3>🐍 Yılan Oyunu</h3>
+  <p>Klasik yılan oyunu</p>
+  <a href="yilan.html" class="btn">Oyna</a>
+</div>
 
-        <div class="oyun-kutusu">
-            <h3> 🧩 Tetris oyunu</h3>
-            <p> Klasik blok yerkeştirme oyunu, puan almak için bloklar ile bir satırı tamamen kaplayın.</p>
-            <a href="Tetris.hrml" class="btn">Oyna</a>
-        </div>
-    </div>
-
-</body>
-</html> 
+<!-- Tetris Oyunu -->
+<div class="oyun-kutusu">
+  <h3>🧩 Tetris oyunu</h3>
+  <p>Klasik blok yerleştirme oyunu</p>
+  <a href="tetris.html" class="btn">Oyna</a>
+</div>
