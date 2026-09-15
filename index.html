@@ -1,37 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Bizim Oyun Portalı</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oyun Platformumuz</title>
   <style>
     body {
-      background: linear-gradient(135deg, #1e1e2f, #2a2a40);
+      background: #1e1e2f;
       color: #ffffff;
       font-family: sans-serif;
       text-align: center;
+      margin: 0;
       padding: 20px;
     }
 
-    h1 { color: #6c5ce7; }
+    h1 {
+      color: #a29bfe;
+      margin-bottom: 5px;
+    }
+
+    p {
+      color: #b2bec3;
+      font-size: 0.95rem;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
 
     .oyun-kutusu {
       background: #2d2d44;
       border-radius: 12px;
-      padding: 15px;
-      margin: 15px auto;
-      max-width: 300px;
+      padding: 20px;
+      width: 100%;
+      max-width: 320px;
       border: 1px solid #444466;
+      box-sizing: border-box;
     }
 
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #00b894;
-      color: white;
-      border: none;
+    .oyun-kutusu h3 {
+      margin-top: 0;
+      color: #ffffff;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #6c5ce7;
+      color: #ffffff;
+      padding: 10px 30px;
       border-radius: 8px;
-      cursor: pointer;
+      text-decoration: none;
+      font-weight: bold;
       margin-top: 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:active {
+      background: #5b4cc4;
     }
   </style>
 </head>
@@ -40,24 +70,28 @@
   <h1>🎮 Oyun Platformumuz</h1>
   <p>Tamamen kendi ellerimizle yaptığımız eğlenceli ve reklamsız ücretsiz web oyunları!</p>
 
- 
-  <!-- Sayı Tahmin Oyunu (ı yerine i olmalı) -->
-<div class="oyun-kutusu">
-  <h3>🎯 Sayı Tahmin Oyunu</h3>
-  <p>Bilgisayar bir sayı tutar ve onu bilmeye çalışırsın</p>
-  <a href="sayitahminoyunu.html" class="btn">Oyna</a>
-</div>
+  <div class="container">
+    <!-- Sayı Tahmin Oyunu -->
+    <div class="oyun-kutusu">
+      <h3>🎯 Sayı Tahmin Oyunu</h3>
+      <p>Bilgisayar bir sayı tutar ve onu bilmeye çalışırsın.</p>
+      <a href="sayitahminoyunu.html" class="btn">Oyna</a>
+    </div>
 
-<!-- Yılan Oyunu -->
-<div class="oyun-kutusu">
-  <h3>🐍 Yılan Oyunu</h3>
-  <p>Klasik yılan oyunu</p>
-  <a href="yilan.html" class="btn">Oyna</a>
-</div>
+    <!-- Yılan Oyunu -->
+    <div class="oyun-kutusu">
+      <h3>🐍 Yılan Oyunu</h3>
+      <p>Klasik yılan oyunu.</p>
+      <a href="yilan.html" class="btn">Oyna</a>
+    </div>
 
-<!-- Tetris Oyunu -->
-<div class="oyun-kutusu">
-  <h3>🧩 Tetris oyunu</h3>
-  <p>Klasik blok yerleştirme oyunu</p>
-  <a href="tetris.html" class="btn">Oyna</a>
-</div>
+    <!-- Tetris Oyunu -->
+    <div class="oyun-kutusu">
+      <h3>🧩 Tetris Oyunu</h3>
+      <p>Klasik blok yerleştirme oyunu.</p>
+      <a href="tetris.html" class="btn">Oyna</a>
+    </div>
+  </div>
+
+</body>
+</html>
