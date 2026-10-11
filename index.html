@@ -3,25 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="DTral9GXV1LVsAvtVUgYo__cfgAdhwG-iZcmtrTGbuI" />
+  
+  <!-- Google Search Console Doğrulama Kodun -->
+  <meta name="google-site-verification" content="SENIN_GOOGLE_KODUN" />
+
   <title>Oyun Platformumuz</title>
   <style>
+    /* Varsayılan Karanlık Tema (Dark Mode) */
+    :root {
+      --bg-color: #1e1e2f;
+      --text-color: #ffffff;
+      --subtext-color: #b2bec3;
+      --card-bg: #2d2d44;
+      --card-border: #444466;
+      --btn-bg: #6c5ce7;
+      --btn-text: #ffffff;
+    }
+
+    /* Aydınlık Tema (Light Mode) */
+    [data-theme="light"] {
+      --bg-color: #f4f5f9;
+      --text-color: #2d3436;
+      --subtext-color: #636e72;
+      --card-bg: #ffffff;
+      --card-border: #dfe6e9;
+      --btn-bg: #6c5ce7;
+      --btn-text: #ffffff;
+    }
+
     body {
-      background: #1e1e2f;
-      color: #ffffff;
+      background-color: var(--bg-color);
+      color: var(--text-color);
       font-family: sans-serif;
       text-align: center;
       margin: 0;
       padding: 20px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Tema Değiştirme Butonu */
+    .theme-toggle {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-color);
+      padding: 8px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: bold;
+      transition: all 0.3s;
     }
 
     h1 {
       color: #a29bfe;
+      margin-top: 40px;
       margin-bottom: 5px;
     }
 
     p {
-      color: #b2bec3;
+      color: var(--subtext-color);
       font-size: 0.95rem;
     }
 
@@ -34,42 +77,32 @@
     }
 
     .oyun-kutusu {
-      background: #2d2d44;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 20px;
       width: 100%;
       max-width: 320px;
-      border: 1px solid #444466;
       box-sizing: border-box;
-    }
-
-    .oyun-kutusu h3 {
-      margin-top: 0;
-      color: #ffffff;
+      transition: background-color 0.3s, border-color 0.3s;
     }
 
     .btn {
       display: inline-block;
-      background: #6c5ce7;
-      color: #ffffff;
+      background: var(--btn-bg);
+      color: var(--btn-text);
       padding: 10px 30px;
       border-radius: 8px;
       text-decoration: none;
       font-weight: bold;
       margin-top: 10px;
-      border: none;
-      cursor: pointer;
-    }
-    <meta name="description" content="Ücretsiz, reklamsız Sayı Tahmin, Yılan ve Tetris oyunlarını tarayıcıdan hemen oyna!">
-<meta name="keywords" content="ücretsiz oyunlar, kaanae, Kaan ve Ali emir sitesi, tetris oyna, yılan oyunu, Güvenilir siteler, kaan oyun platformu"
-    
-
-    .btn:active {
-      background: #5b4cc4;
     }
   </style>
 </head>
 <body>
+
+  <!-- Tema Butonu -->
+  <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">🌙 Karanlık</button>
 
   <h1>🎮 Oyun Platformumuz</h1>
   <p>Tamamen kendi ellerimizle yaptığımız eğlenceli ve reklamsız ücretsiz web oyunları!</p>
@@ -97,5 +130,22 @@
     </div>
   </div>
 
+  <!-- Tema Değiştirme JavaScript Kodu -->
+  <script>
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      const themeBtn = document.getElementById("themeBtn");
+
+      if (currentTheme === "light") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        themeBtn.innerHTML = "🌙 Karanlık";
+      } else {
+        document.documentElement.setAttribute("data-theme", "light");
+        themeBtn.innerHTML = "☀️ Aydınlık";
+      }
+    }
+  </script>
+
 </body>
-</html>
+  </html>
+  
