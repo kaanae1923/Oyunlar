@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XOX Oyunu</title>
+  <style>
+    body {
+      background-color: #1e1e2f;
+      color: #ffffff;
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #a29bfe;
+      margin-bottom: 5px;
+    }
+    #status {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      color: #b2bec3;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 25px;
+    }
+    .cell {
+      background: #2d2d44;
+      border: 2px solid #444466;
+      border-radius: 12px;
+      font-size: 2.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #ffffff;
+      transition: background 0.2s;
+    }
+    .cell:hover {
+      background: #3d3d5c;
+    }
+    .btn {
+      background: #6c5ce7;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      margin: 5px;
+    }
+    .btn:hover {
+      background: #5b4bc4;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>❌ XOX Oyunu ⭕</h1>
+  <div id="status">Sıra: X</div>
+
+  <div class="board" id="board">
+    <div class="cell" onclick="makeMove(0)"></div>
+    <div class="cell" onclick="makeMove(1)"></div>
+    <div class="cell" onclick="makeMove(2)"></div>
+    <div class="cell" onclick="makeMove(3)"></div>
+    <div class="cell" onclick="makeMove(4)"></div>
+    <div class="cell" onclick="makeMove(5)"></div>
+    <div class="cell" onclick="makeMove(6)"></div>
+    <div class="cell" onclick="makeMove(7)"></div>
+    <div class="cell" onclick="makeMove(8)"></div>
+  </div>
+
+  <button class="btn" onclick="resetGame()">Yeniden Başlat</button>
+  <br>
+  <a href="index.html" class="btn" style="background: #2d2d44; border: 1px solid #444466;">Ana Sayfaya Dön</a>
+
+  <script>
+    let board = ['', '', '', '', '', '', '', '', ''];
+    let currentPlayer = 'X';
+    let isGameActive = true;
+    const statusDisplay = document.getElementById('status');
+
+    const winningConditions = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Yatay
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Dikey
+      [0, 4, 8], [2, 4, 6]            // Çapraz
+    ];
+
+    function makeMove(index) {
+      if (board[index] !== '' || !isGameActive) return;
+
+      board[index] = currentPlayer;
+      document.getElementsByClassName('cell')[index].innerText = currentPlayer;
+
+      checkResult();
+    }
+
+    function checkResult() {
+      let roundWon = false;
+
+      for (let i = 0; i < winningConditions.length; i++) {
+        const [a, b, c] = winningConditions[i];
+        if (board[a] === '' || board[b] === '' || board[c] === '') continue;
+        if (board[a] === board[b] && board[b] === board[c]) {
+          roundWon = true;
+          break;
+        }
+      }
+
+      if (roundWon) {
+        statusDisplay.innerText = `🎉 Kazanan: ${currentPlayer}!`;
+        isGameActive = false;
+        return;
+      }
+
+      if (!board.includes('')) {
+        statusDisplay.innerText = `🤝 Berabere!`;
+        isGameActive = false;
+        return;
+      }
+
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      statusDisplay.innerText = `Sıra: ${currentPlayer}`;
+    }
+
+    function resetGame() {
+      board = ['', '', '', '', '', '', '', '', ''];
+      isGameActive = true;
+      currentPlayer = 'X';
+      statusDisplay.innerText = `Sıra: ${currentPlayer}`;
+      
+      const cells = document.getElementsByClassName('cell');
+      for (let i = 0; i < cells.length; i++) {
+        cells[i].innerText = '';
+      }
+    }
+  </script>
+
+</body>
+</html>
